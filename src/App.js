@@ -18,15 +18,30 @@ export default function App({
     new TodoForm({
         $target,
         onSubmit: async (content) => {
-            await request(`/${this.state.username}`), {
-                method: 'GET',
-                body: JSON.stringify({
-                    content,
-                    isCompleted: false
-                })
+            const todo = {
+                content,
+                isCompleted: false
             }
+            this.setState({
+                ...this.state,
+                todos: [
+                    ...this.state.todos,
+                    todo
+                ]
+            })
+            await request(`/${this.state.username}`, {
+                method: 'POST',
+                body: JSON.stringify(todo)
+            })
+            await fetchTodos() 
         }
     })
+
+    this.setState = nextState => {
+        this.state = nextState
+    
+        todoList.setState(this.state.todos)
+    }
 
     const todoList = new TodoList({
         $target, 
@@ -39,14 +54,17 @@ export default function App({
         }
     })
 
-    const init = async () => {
+    const fetchTodos = async () => {
         const { username } = this.state
 
         if (username) {
-            const todos = await request(`/${username}`)
-            console.log(todos)
+            const todos = await request(`/${username}?delay=5000`)
+            this.setState({
+                ...this.state,
+                todos
+            })
         }
     }
 
-    init()
+    fetchTodos()
 }
