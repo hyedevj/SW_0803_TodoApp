@@ -3,6 +3,7 @@ export const API_END_POINT = 'https://mwu2.todo.edu-api.programmers.co.kr'
 export const request = async (url, options = {}) => {
     try {
         const res = await fetch(`${API_END_POINT}${url}`, {
+            method: 'GET',
             ...options,
             headers: {
                 'Content-Type': 'application/json'
